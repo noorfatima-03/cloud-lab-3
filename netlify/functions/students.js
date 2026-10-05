@@ -1,10 +1,10 @@
 exports.handler = async function (event) {
     const SUPABASE_URL = process.env.SUPABASE_URL;
-    const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
+    const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY;
 
     try {
         // Check environment variables
-        if (!SUPABASE_URL || !SUPABASE_KEY) {
+        if (!SUPABASE_URL || !SUPABASE_SECRET_KEY) {
             return {
                 statusCode: 500,
                 headers: {
@@ -23,8 +23,8 @@ exports.handler = async function (event) {
                 {
                     method: "GET",
                     headers: {
-                        "apikey": SUPABASE_KEY,
-                        "Authorization": "Bearer " + SUPABASE_KEY
+                        "apikey": SUPABASE_SECRET_KEY,
+                        "Authorization": "Bearer " + SUPABASE_SECRET_KEY
                     }
                 }
             );
@@ -85,8 +85,8 @@ exports.handler = async function (event) {
                 {
                     method: "POST",
                     headers: {
-                        "apikey": SUPABASE_KEY,
-                        "Authorization": "Bearer " + SUPABASE_KEY,
+                        "apikey": SUPABASE_SECRET_KEY,
+                        "Authorization": "Bearer " + SUPABASE_SECRET_KEY,
                         "Content-Type": "application/json",
                         "Prefer": "return=representation"
                     },
