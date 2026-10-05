@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cloud Lab 3 - Student Records</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Cloud Lab 3</h1>
+        <h2>Student Records System</h2>
+
+        <p class="description">
+            Student records are stored in a cloud database and displayed
+            through a web application deployed on Netlify.
+        </p>
+
+        <div class="card">
+
+            <h3>Add Student</h3>
+
+            <form id="studentForm">
+
+                <label for="name">Student Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter student name"
+                    required
+                >
+
+                <label for="rollNumber">Roll Number</label>
+                <input
+                    type="text"
+                    id="rollNumber"
+                    placeholder="Enter roll number"
+                    required
+                >
+
+                <label for="course">Course</label>
+                <input
+                    type="text"
+                    id="course"
+                    placeholder="Enter course"
+                    required
+                >
+
+                <button type="submit">
+                    Add Student
+                </button>
+
+            </form>
+
+            <p id="message"></p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Student Records</h3>
+
+            <button id="refreshButton">
+                Refresh Records
+            </button>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Roll Number</th>
+                            <th>Course</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="studentTableBody">
+                        <!-- Student records will appear here -->
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
