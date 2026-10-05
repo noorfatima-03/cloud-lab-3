@@ -1,103 +1,95 @@
-exports.handler = async function(event) {
-
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
-
-    if (!SUPABASE_URL || !SUPABASE_KEY) {
-
-        return {
-            statusCode: 500,
-
-            body: JSON.stringify({
-                error: "Supabase environment variables are not configured."
-            })
-        };
-
-    }
-
+exports.handler = async function (event) {
+    const SUPABASE_URL = process.env.SUPABASE_URL;
+    const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 
     try {
+        // Check environment variables
+        if (!SUPABASE_URL || !SUPABASE_KEY) {
+            return {
+                statusCode: 500,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    error: "Supabase environment variables are not configured."
+                })
+            };
+        }
 
-        // GET: Retrieve all students
+        // GET: Fetch all students
         if (event.httpMethod === "GET") {
-
             const response = await fetch(
-                `${SUPABASE_URL}/rest/v1/students?select=*&order=id.asc`,
+                SUPABASE_URL + "/rest/v1/students?select=*&order=id.asc",
                 {
                     method: "GET",
-
                     headers: {
                         "apikey": SUPABASE_KEY,
-                        "Authorization": `Bearer ${SUPABASE_KEY}`
+                        "Authorization": "Bearer " + SUPABASE_KEY
                     }
                 }
             );
 
-
             const data = await response.json();
 
-
             if (!response.ok) {
-
                 return {
                     statusCode: response.status,
-
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify({
-                        error: data.message || "Database error."
+                        error: data.message || data.error || "Database error"
                     })
                 };
-
             }
-
 
             return {
                 statusCode: 200,
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify(data)
             };
-
         }
-
 
         // POST: Add a new student
         if (event.httpMethod === "POST") {
+            if (!event.body) {
+                return {
+                    statusCode: 400,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        error: "No student data was received."
+                    })
+                };
+            }
 
             const student = JSON.parse(event.body);
 
-
-            if (
-                !student.name ||
-                !student.roll_number ||
-                !student.course
-            ) {
-
+            if (!student.name || !student.roll_number || !student.course) {
                 return {
                     statusCode: 400,
-
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify({
                         error: "All fields are required."
                     })
                 };
-
             }
 
-
             const response = await fetch(
-                `${SUPABASE_URL}/rest/v1/students`,
+                SUPABASE_URL + "/rest/v1/students",
                 {
                     method: "POST",
-
                     headers: {
                         "apikey": SUPABASE_KEY,
-                        "Authorization": `Bearer ${SUPABASE_KEY}`,
+                        "Authorization": "Bearer " + SUPABASE_KEY,
                         "Content-Type": "application/json",
                         "Prefer": "return=representation"
                     },
-
                     body: JSON.stringify({
                         name: student.name,
                         roll_number: student.roll_number,
@@ -106,57 +98,51 @@ const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
                 }
             );
 
-
             const data = await response.json();
 
-
             if (!response.ok) {
-
                 return {
                     statusCode: response.status,
-
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
                     body: JSON.stringify({
-                        error: data.message || "Database error."
+                        error: data.message || data.error || "Database error"
                     })
                 };
-
             }
-
 
             return {
                 statusCode: 201,
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify(data[0])
             };
-
         }
 
-
+        // Method not supported
         return {
             statusCode: 405,
-
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({
                 error: "Method not allowed."
             })
         };
 
-
     } catch (error) {
-
-        console.error(error);
+        console.error("Server error:", error);
 
         return {
             statusCode: 500,
-
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: JSON.stringify({
-                error: error.message
+                error: error.message || "Internal server error."
             })
         };
-
     }
-
 };
